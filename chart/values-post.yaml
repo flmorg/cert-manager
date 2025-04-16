@@ -1,0 +1,14 @@
+clusterIssuers:
+  - name: letsencrypt-dns
+    acme:
+      email: "@vault(secrets/data/letsencrypt email_address | EMAIL_ADDRESS)"
+      server: https://acme-v02.api.letsencrypt.org/directory
+      privateKeySecretRef:
+        name: letsencrypt-dns-key
+      solvers:
+        - dns01:
+            cloudflare:
+              email: "@vault(secrets/data/cloudflare email_address | CF_EMAIL_ADDRESS)"
+              apiTokenSecretRef:
+                name: cloudflare-auth
+                key: API_KEY

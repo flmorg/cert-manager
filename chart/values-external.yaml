@@ -1,0 +1,18 @@
+crds:
+  enabled: true
+  keep: true
+prometheus:
+  enabled: true
+webhook:
+  timeoutSeconds: 4
+global:
+  rbac:
+    create: true
+    aggregateClusterRoles: true
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+image:
+  pullPolicy: Always

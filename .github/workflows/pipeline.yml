@@ -1,0 +1,42 @@
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'chart/**'
+    branches: [ main ]
+
+jobs:
+  deploy_universal:
+    uses: flmorg/universal-workflows/.github/workflows/chart.install.yml@main
+    with:
+      githubContext: ${{ toJSON(github) }}
+      chartRepo: oci://ghcr.io/flmorg
+      chartName: universal-chart
+      version: ^1.0.0
+      valuesPath: chart/values.yaml
+    secrets: inherit
+
+  deploy_external:
+    needs: [ deploy_universal ]
+    uses: flmorg/universal-workflows/.github/workflows/chart.install.yml@main
+    with:
+      githubContext: ${{ toJSON(github) }}
+      chartRepo: https://charts.jetstack.io
+      chartName: cert-manager
+      version: ^1.0.0
+      valuesPath: chart/values-external.yaml
+      releaseName: external
+    secrets: inherit
+  
+  deploy_post:
+    needs: [ deploy_external ]
+    uses: flmorg/universal-workflows/.github/workflows/chart.install.yml@main
+    with:
+      githubContext: ${{ toJSON(github) }}
+      chartRepo: oci://ghcr.io/flmorg
+      chartName: universal-chart
+      version: ^1.0.0
+      valuesPath: chart/values-post.yaml
+      releaseName: post
+    secrets: inherit

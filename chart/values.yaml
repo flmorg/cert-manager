@@ -1,0 +1,5 @@
+vaultSecrets:
+  - name: cloudflare-auth
+    path: secrets/cloudflare
+    templates:
+      API_KEY: "{% .Secrets.api_key %}"
